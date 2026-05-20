@@ -12,8 +12,11 @@ public class PlayerMovement : MonoBehaviour
     public float castDistance;
     public LayerMask groundLayer;
 
-    //Animator anim;
-    //public bool Moving;
+    //public bool OnGround;
+
+    Animator anim;
+    public bool Moving;
+    public bool Jumping;
 
 
 
@@ -21,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         RB = GetComponent<Rigidbody2D>();
-        //anim = GetComponent<Animator>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -35,15 +38,15 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey("a") || Input.GetKey(KeyCode.LeftArrow))
         {
             vel.x = -Speed;
-            newScale.x = currentScale;
-            //Moving = true;
+            newScale.x = -currentScale;
+            Moving = true;
         }
 
         if (Input.GetKey("d") || Input.GetKey(KeyCode.RightArrow))
         {
             vel.x = Speed;
-            newScale.x = -currentScale;
-            //Moving = true;
+            newScale.x = currentScale;
+            Moving = true;
         }
 
         if (Input.GetKey("w") && isGrounded() || Input.GetKey(KeyCode.UpArrow) && isGrounded())
@@ -51,16 +54,26 @@ public class PlayerMovement : MonoBehaviour
             // velocity is a vector 
             vel.y = jumpForce;
         }
+       
+        if(isGrounded() == false)
+        {
+            Jumping = true;
+        }
 
+        if (isGrounded() == true)
+        {
+            Jumping = false;
+        }
 
-        //if (Input.GetKeyUp("a") || Input.GetKeyUp("d") || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow))
-        //{
-        //    Moving = false;
-        //}
+        if (Input.GetKeyUp("a") || Input.GetKeyUp("d") || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow))
+        {
+            Moving = false;
+        }
 
         RB.linearVelocity = vel;
 
-        //anim.SetBool("Moving", Moving);
+        anim.SetBool("Moving", Moving);
+        anim.SetBool("Jumping", Jumping);
         transform.localScale = newScale;
     }
 
